@@ -15,6 +15,7 @@ prefix_dir="$PWD/install"
 cuda=/usr/local/cuda
 
 echo "OpenACC build script for NVIDIA GPUs patched to suport sm_20 (Fermi GPUs)"
+echo
 
 
 if [ "$1" == "--help" ] ; then
@@ -29,7 +30,7 @@ if [ "$1" == "--help" ] ; then
 	exit 0
 fi
 
-if [ $1 == "--makeporteusxzm" -o $1 == "--makeslackware" -o $1 == "--makebinrelease"  ] ; then
+if [ "$1" == "--makeporteusxzm" -o "$1" == "--makeslackware" -o "$1" == "--makebinrelease"  ] ; then
 	dest_dir="$PWD/package"
 	work_dir="$PWD/wrk"
 	prefix_dir="/usr"
@@ -40,17 +41,19 @@ fi
 echo " Checking cuda dir $cuda"
 if [ -e $cuda ] ; then
 	echo "ok."
+	echo 
 else
 	echo "Cuda dir not found, please fix cuda dir."
 	exit -1
 fi
 
-echo " 	Installed gcc version:"
+echo " Installed gcc version:"
 gcc -v
 
 echo
 echo "Ctrl-c to stop (continuing in 5 secs)"
 sleep 5
+echo
 
 mkdir -p $work_dir
 cd $work_dir
@@ -59,33 +62,35 @@ echo " Downloading Patched Sources..."
 
 if [ ! -e nvptx-tools ] ; then
 	git clone https://github.com/RodrigoOt/nvptx-tools
-elif [ "$1" == "--pull" ] then
+elif [ "$1" == "--pull" ] ; then
 	cd nvptx-tools 
 	git pull
  	cd ..	
 fi
 if [ ! -e nvptx-newlib ] ; then
 	git clone https://github.com/RodrigoOt/nvptx-newlib
-elif [ "$1" == "--pull" ] then
+elif [ "$1" == "--pull" ] ; then
 	cd nvptx-newlib
 	git pull
  	cd ..	
 fi
 if [ ! -e gcc-9.1.0 ] ; then
 	git clone https://github.com/RodrigoOt/gcc-9.1.0
-elif [ "$1" == "--pull" ] then
+elif [ "$1" == "--pull" ] ; then
 	cd gcc-9.1.0 
 	git pull
  	cd ..	
 fi
 
-echo  10 seconds to continue
-sleep 10
+echo
+echo "Ctrl-c to stop (continuing in 5 secs)"
+sleep 5
+echo
 
-echo "  Building: "
+echo " Building: "
 
-if [ ! -e build-nvptx-tools/config.cache ] ; then
-	mkdir build-nvptx-tools
+if [ ! -e build-nvptx-tools/config.status ] ; then
+	test -e build-nvptx-tools || mkdir build-nvptx-tools
 	cd build-nvptx-tools
 	../nvptx-tools/configure \
 	    --with-cuda-driver-include=$cuda/include \
@@ -94,12 +99,12 @@ if [ ! -e build-nvptx-tools/config.cache ] ; then
 	make
 	make install DESTDIR=${dest_dir}
 	cd ..
-elif [ "$1" == "--forceinstall" -o "$1" == "--pull"] ;then
+elif [ "$1" == "--forceinstall" -o "$1" == "--pull" ] ; then
 	cd build-nvptx-tools
 	make install DESTDIR=${dest_dir}
 	cd ..
 else
-	echo Continuing...
+	echo "  build-nvptx-tools compiled (to force use --forceinstall"
 fi
 
 if [ -e gcc-9.1.0 ] ; then
@@ -108,14 +113,15 @@ if [ -e gcc-9.1.0 ] ; then
 	if [ ! -e gmp-4.3.2.tar.bz2  ] ; then
 		./contrib/download_prerequisites
 	fi
-	ln -s ../nvptx-newlib/newlib newlib
+	test -L newlib || ln -s ../nvptx-newlib/newlib newlib
 	cd ..
 fi
 
 target=$(gcc-9.1.0/config.guess)
 
 if [ ! -e build-nvptx-gcc ] ; then
-	mkdir build-nvptx-gcc
+	echo " Building gcc accelerator with nvptx "
+	test -e build-nvptx-gcc || mkdir build-nvptx-gcc
 	cd build-nvptx-gcc
 	../gcc-9.1.0/configure \
 	    --target=nvptx-none --with-build-time-tools=${dest_dir}/$prefix_dir/nvptx-none/bin \
@@ -127,21 +133,23 @@ if [ ! -e build-nvptx-gcc ] ; then
 	make -j4
 	make install DESTDIR=${dest_dir}
 	cd ..
-fi
-if [ -e build-nvptx-gcc -a "$1" == "--forcemake" ] ; then
+elif [ -e build-nvptx-gcc -a "$1" == "--forcemake" ] ; then
 	echo Make Forced in build-nvptx-gcc
 	cd build-nvptx-gcc
 	make -j4
 	make install DESTDIR=${dest_dir}
 	cd ..
-elif [ "$1" == "--forceinstall" -o "$1" == "--pull"] ;then
+elif [ "$1" == "--forceinstall" -o "$1" == "--pull" ] ; then
 	cd build-nvptx-gcc
 	make install DESTDIR=${dest_dir}
 	cd ..
+else
+	echo "  build-nvptx-gcc compiled (to force use --forcemake or --forceinstall"
 fi
 
 if [ ! -e build-host-gcc ] ; then
-	mkdir build-host-gcc
+	echo " Building gcc "
+	test -e build-host-gcc || mkdir build-host-gcc
 	cd  build-host-gcc
 	../gcc-9.1.0/configure \
 	    --enable-offload-targets=nvptx-none \
@@ -155,30 +163,31 @@ if [ ! -e build-host-gcc ] ; then
 	make -j4
 	make install DESTDIR=${dest_dir}
 	cd ..
-fi
-if [ -e build-host-gcc -a "$1" == "--forcemake" ] ; then
+elif [ -e build-host-gcc -a "$1" == "--forcemake" ] ; then
 	echo Make Forced in build-host-gcc
 	cd  build-host-gcc
 	make -j4
 	make install DESTDIR=${dest_dir}
 	cd ..
-elif [ "$1" == "--forceinstall" -o "$1" == "--pull"] ;then
-	cd  build-host-gcc
+elif [ "$1" == "--forceinstall" -o "$1" == "--pull" ] ; then
+	cd  build-host-gcc 
 	make install DESTDIR=${dest_dir}
 	cd ..
+else
+	echo "  build-host-gcc compiled (to force use --forcemake or --forceinstall"
 fi
 
 cd ..
 
 
-if [ $1 == "--makeporteusxzm" ] ; then
+if [ "$1" == "--makeporteusxzm" ] ; then
 	dir2xzm package Gcc-9.1.0-nvptx-x86_64.xzm
 fi
-if [ $1 == "--makeslackware" ] ; then
+if [ "$1" == "--makeslackware" ] ; then
 	cp slackware/* package
 	dir2txz package gcc-9.1.0-nvptx-x86_64.tar.gz
 fi
-if [ $1 == "--makebinrelease"  ] ; then
+if [ "$1" == "--makebinrelease"  ] ; then
 	cd package
 	tar xzvf ../gcc-9.1.0-nvptx-x86_64.tar.gz *
 	cd ..
