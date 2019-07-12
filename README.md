@@ -34,9 +34,14 @@ References:
 
 https://www.openmp.org/  and  https://www.openacc.org/
 
+https://gcc.gnu.org/wiki/nvptx
 https://gcc.gcc.gnu.narkive.com/W93in4yj/how-to-use-old-gpu-fermi-in-gcc-with-openacc
 https://kristerw.blogspot.com/2017/04/building-gcc-with-support-for-nvidia.html
 https://gist.github.com/matthiasdiener/e318e7ed8815872e9d29feb3b9c8413f
 https://github.com/tschwinge/gcc-playground/tree/big-offload/openacc-gcc-8-branch/master
+
+https://github.com/gcc-mirror/gcc
+https://github.com/MentorEmbedded/nvptx-tools
+https://github.com/MentorEmbedded/nvptx-newlib
 
 https://www.hahnjo.de/blog/2018/10/08/clang-7.0-openmp-offloading-nvidia.html
