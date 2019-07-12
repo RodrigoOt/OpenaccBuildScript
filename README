@@ -20,5 +20,13 @@ Help:
 
 .OpenaccSetup.sh --help
 
+Testing:
+
+StartWorking.sh
+
+cd example
+
+gcc -fopenacc -foffload="-misa=sm_20 -O2" calcpi.c -o calcpi && time ./calcpi
+
 
 
