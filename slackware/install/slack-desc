@@ -1,0 +1,12 @@
+       |-----handy-ruler------------------------------------------------------|
+appname: gcc-9.1.0-nvptx-x86_64.txz (offload to GPUs via OpenACC)
+appname:    
+appname: Compiler to make programs run on GPUs via OpenACC or OpenMP.      
+appname:                                                                    
+appname:                                                                     
+appname:                             
+appname:                                                                      
+appname:                               
+appname: GitHub project buildscript:
+appname:   https://github.com/RodrigoOt/OpenaccBuildScript
+appname:
