@@ -126,6 +126,8 @@ if [ ! -e build-nvptx-gcc ] ; then
 	../gcc-9.1.0/configure \
 	    --target=nvptx-none --with-build-time-tools=${dest_dir}/$prefix_dir/nvptx-none/bin \
 	    --enable-as-accelerator-for=$target \
+	    --disable-checking \
+	    --disable-libstdcxx \
 	    --disable-sjlj-exceptions \
 	    --enable-newlib-io-long-long \
 	    --enable-languages="c,c++,lto" \
