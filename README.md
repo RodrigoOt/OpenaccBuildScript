@@ -32,8 +32,7 @@ gcc -fopenacc -foffload="-misa=sm_20 -O2" calcpi.c -o calcpi && time ./calcpi
 
 References:
 
-https://www.openmp.org/
-https://www.openacc.org/
+https://www.openmp.org/  and  https://www.openacc.org/
 
 https://gcc.gcc.gnu.narkive.com/W93in4yj/how-to-use-old-gpu-fermi-in-gcc-with-openacc
 https://kristerw.blogspot.com/2017/04/building-gcc-with-support-for-nvidia.html
