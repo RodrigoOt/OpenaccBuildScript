@@ -16,6 +16,16 @@ cuda=/usr/local/cuda
 
 echo "OpenACC build script for NVIDIA GPUs patched to suport sm_20 (Fermi GPUs)"
 
+
+if [ "$1" == "--help" ] ; then
+	echo " Usage:"
+	echo "  $0 --help for help"
+	echo "  $0 --pull to pull from git and force install"
+	echo "  $0 --forcemake to force make files an install"
+	echo "  $0 --forceinstall"
+	exit 0
+fi
+
 echo " Checking cuda dir $cuda"
 if [ -e $cuda ] ; then
 	echo "ok."
@@ -38,12 +48,24 @@ echo " Downloading Patched Sources..."
 
 if [ ! -e nvptx-tools ] ; then
 	git clone https://github.com/RodrigoOt/nvptx-tools
+elif [ "$1" == "--pull" ] then
+	cd nvptx-tools 
+	git pull
+ 	cd ..	
 fi
 if [ ! -e nvptx-newlib ] ; then
 	git clone https://github.com/RodrigoOt/nvptx-newlib
+elif [ "$1" == "--pull" ] then
+	cd nvptx-newlib
+	git pull
+ 	cd ..	
 fi
 if [ ! -e gcc-9.1.0 ] ; then
 	git clone https://github.com/RodrigoOt/gcc-9.1.0
+elif [ "$1" == "--pull" ] then
+	cd gcc-9.1.0 
+	git pull
+ 	cd ..	
 fi
 
 echo  10 seconds to continue
@@ -61,7 +83,7 @@ if [ ! -e nvptx-tools/config.cache ] ; then
 	make
 	make install DESTDIR=${dest_dir}
 	cd ..
-elif [ "$1" == "-forceinstall" ] ;then
+elif [ "$1" == "--forceinstall" -o "$1" == "--pull"] ;then
 	cd build-nvptx-tools
 	make install DESTDIR=${dest_dir}
 	cd ..
@@ -95,13 +117,13 @@ if [ ! -e build-nvptx-gcc ] ; then
 	make install DESTDIR=${dest_dir}
 	cd ..
 fi
-if [ -e build-nvptx-gcc -a "$1" == "-forcemake" ] ; then
+if [ -e build-nvptx-gcc -a "$1" == "--forcemake" ] ; then
 	echo Make Forced in build-nvptx-gcc
 	cd build-nvptx-gcc
 	make -j4
 	make install DESTDIR=${dest_dir}
 	cd ..
-elif [ "$1" == "-forceinstall" ] ; then
+elif [ "$1" == "--forceinstall" -o "$1" == "--pull"] ;then
 	cd build-nvptx-gcc
 	make install DESTDIR=${dest_dir}
 	cd ..
@@ -123,13 +145,13 @@ if [ ! -e build-host-gcc ] ; then
 	make install DESTDIR=${dest_dir}
 	cd ..
 fi
-if [ -e build-host-gcc -a "$1" == "-forcemake" ] ; then
+if [ -e build-host-gcc -a "$1" == "--forcemake" ] ; then
 	echo Make Forced in build-host-gcc
 	cd  build-host-gcc
 	make -j4
 	make install DESTDIR=${dest_dir}
 	cd ..
-elif [ "$1" == "-forceinstall" ] ;  then
+elif [ "$1" == "--forceinstall" -o "$1" == "--pull"] ;then
 	cd  build-host-gcc
 	make install DESTDIR=${dest_dir}
 	cd ..
