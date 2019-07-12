@@ -11,3 +11,14 @@ cd OpenaccBuildScript
 #Wait a lot :P
 
 ./StartWorking.sh
+
+
+Build package:
+
+./OpenaccSetup.sh --makebinrelease
+
+Help:
+
+.OpenaccSetup.sh --help
+
+

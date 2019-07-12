@@ -12,7 +12,13 @@ cd OpenaccBuildScript
 
 ./StartWorking.sh
 
+Build package:
 
+./OpenaccSetup.sh --makebinrelease
+
+Help:
+
+.OpenaccSetup.sh --help
 
 
 

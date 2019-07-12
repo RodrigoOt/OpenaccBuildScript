@@ -23,7 +23,18 @@ if [ "$1" == "--help" ] ; then
 	echo "  $0 --pull to pull from git and force install"
 	echo "  $0 --forcemake to force make files an install"
 	echo "  $0 --forceinstall"
+	echo "  $0 --makeporteusxzm"
+	echo "  $0 --makeslackware"
+	echo "  $0 --makebinrelease"
 	exit 0
+fi
+
+if [ $1 == "--makeporteusxzm" -o $1 == "--makeslackware" -o $1 == "--makebinrelease"  ] ; then
+	dest_dir="$PWD/package"
+	work_dir="$PWD/wrk"
+	prefix_dir="/usr"
+	rm -fr $work_dir/build-* 
+	echo " Building package to $dest_dir$prefix_dir"
 fi
 
 echo " Checking cuda dir $cuda"
@@ -73,7 +84,7 @@ sleep 10
 
 echo "  Building: "
 
-if [ ! -e nvptx-tools/config.cache ] ; then
+if [ ! -e build-nvptx-tools/config.cache ] ; then
 	mkdir build-nvptx-tools
 	cd build-nvptx-tools
 	../nvptx-tools/configure \
@@ -156,5 +167,22 @@ elif [ "$1" == "--forceinstall" -o "$1" == "--pull"] ;then
 	make install DESTDIR=${dest_dir}
 	cd ..
 fi
+
+cd ..
+
+
+if [ $1 == "--makeporteusxzm" ] ; then
+	dir2xzm package Gcc-9.1.0-nvptx-x86_64.xzm
+fi
+if [ $1 == "--makeslackware" ] ; then
+	cp slackware/* package
+	dir2txz package gcc-9.1.0-nvptx-x86_64.tar.gz
+fi
+if [ $1 == "--makebinrelease"  ] ; then
+	cd package
+	tar xzvf ../gcc-9.1.0-nvptx-x86_64.tar.gz *
+	cd ..
+fi
+
 
 
