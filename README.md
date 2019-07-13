@@ -34,7 +34,9 @@ References:
 
 https://www.openmp.org/  and  https://www.openacc.org/
 
-https://gcc.gnu.org/wiki/nvptx 
+https://gcc.gnu.org/wiki/nvptx
+https://gcc.gnu.org/wiki/Offloading#How_to_try_offloading_enabled_GCC
+
 https://gcc.gcc.gnu.narkive.com/W93in4yj/how-to-use-old-gpu-fermi-in-gcc-with-openacc
 
 https://kristerw.blogspot.com/2017/04/building-gcc-with-support-for-nvidia.html
